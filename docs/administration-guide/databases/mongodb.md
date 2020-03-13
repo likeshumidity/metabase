@@ -46,4 +46,7 @@ This guide covers:
      ![Java screengrab](../images/mongo_3.png "Java")
 
   5. The resulting connection string has the relevant information to provide to Metabase's `Add a Database` form for MongoDB.
-  6. You will likely want to select the option `Use DNS SRV`, which newer Atlas clusters use by default.
+  6. You will likely want to select the option `Use DNS SRV`, which newer Atlas clusters use by default. (below is an example using SSL with MongoDB Atlas)
+  
+     ![Metabase credentials screengrab](../images/mongo_4.png "Metabase Add Database")
+
