@@ -19,6 +19,7 @@ import {
   getSearchPlaceholder,
   getStaticPlaceholder,
 } from "./utils";
+import { useTranslateContent2 } from "metabase/i18n/components/ContentTranslationContext";
 
 interface FilterValuePickerProps<T> {
   query: Lib.Query;
@@ -45,6 +46,8 @@ function FilterValuePicker({
     () => Lib.fieldValuesSearchInfo(query, column),
     [query, column],
   );
+
+  const tc = useTranslateContent2();
 
   const { data: fieldData, isLoading } = useGetFieldValuesQuery(
     fieldInfo.fieldId ?? skipToken,
@@ -73,17 +76,23 @@ function FilterValuePicker({
 
   if (canSearchFieldValues(fieldInfo, fieldData)) {
     const searchColumn = checkNotNull(fieldInfo.searchField);
-    const searchColumInfo = Lib.displayInfo(query, stageIndex, searchColumn);
-    const searchColumName = searchColumInfo.displayName;
+    const searchColumnInfo = Lib.displayInfo(query, stageIndex, searchColumn);
+    const searchColumnName = searchColumnInfo.displayName;
 
+    const columnInfo = Lib.displayInfo(query, stageIndex, column);
+    const displayName_translated = tc(columnInfo.displayName);
+    const searchColumnName_translated = tc(searchColumnName);
     return (
       <SearchValuePicker
         fieldId={checkNotNull(fieldInfo.fieldId)}
         searchFieldId={checkNotNull(fieldInfo.searchFieldId)}
         fieldValues={fieldData?.values ?? []}
         selectedValues={selectedValues}
-        placeholder={getSearchPlaceholder(column, searchColumName)}
-        nothingFoundMessage={getNothingFoundMessage(searchColumName)}
+        placeholder={getSearchPlaceholder(column, searchColumnName_translated)}
+        nothingFoundMessage={getNothingFoundMessage(
+          searchColumnName_translated,
+        )}
+        columnDisplayName={displayName_translated}
         autoFocus={autoFocus}
         comboboxProps={comboboxProps}
         parseValue={parseValue}
