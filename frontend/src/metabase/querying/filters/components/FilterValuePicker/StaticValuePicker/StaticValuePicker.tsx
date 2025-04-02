@@ -28,6 +28,9 @@ export function StaticValuePicker({
       aria-label={t`Filter value`}
       parseValue={parseValue}
       onChange={onChange}
+      shouldCreate={shouldCreate}
+      onFocus={onFocus}
+      onBlur={onBlur}
     />
   );
 }
