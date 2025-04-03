@@ -7,6 +7,8 @@ import type { FieldValue } from "metabase-types/api";
 
 import { getEffectiveOptions, searchOptions } from "./utils";
 
+import { useTranslateContent2 } from "metabase/i18n/components/ContentTranslationContext";
+
 interface ListValuePickerProps {
   fieldValues: FieldValue[];
   selectedValues: string[];
@@ -26,13 +28,15 @@ function CheckboxListPicker({
   autoFocus,
   onChange,
 }: ListValuePickerProps) {
+  const tc = useTranslateContent2();
   const [searchValue, setSearchValue] = useState("");
   const [elevatedValues] = useState(selectedValues);
   const availableOptions = getEffectiveOptions(
     fieldValues,
     selectedValues,
     elevatedValues,
-  );
+  ).map((opt) => ({ ...opt, label: tc(opt.label) }));
+
   const filteredOptions = searchOptions(availableOptions, searchValue);
   const selectedValuesSet = new Set(selectedValues);
   const selectedFilteredOptions = filteredOptions.filter((option) =>
