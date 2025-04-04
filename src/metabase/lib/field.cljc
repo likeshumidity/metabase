@@ -843,5 +843,3 @@
        :has-field-values (if column
                            (infer-has-field-values column)
                            :none)})))
-
-
