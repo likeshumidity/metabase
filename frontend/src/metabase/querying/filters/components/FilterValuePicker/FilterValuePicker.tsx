@@ -19,7 +19,6 @@ import {
   getSearchPlaceholder,
   getStaticPlaceholder,
 } from "./utils";
-import { useTranslateContent2 } from "metabase/i18n/components/ContentTranslationContext";
 
 interface FilterValuePickerProps<T> {
   query: Lib.Query;
@@ -46,8 +45,6 @@ function FilterValuePicker({
     () => Lib.fieldValuesSearchInfo(query, column),
     [query, column],
   );
-
-  const tc = useTranslateContent2();
 
   const { data: fieldData, isLoading } = useGetFieldValuesQuery(
     fieldInfo.fieldId ?? skipToken,
@@ -83,6 +80,7 @@ function FilterValuePicker({
     const columnInfo = Lib.displayInfo(query, stageIndex, column);
     const displayName_translated = tc(columnInfo.displayName);
     const searchColumnName_translated = tc(searchColumnName);
+
     return (
       <SearchValuePicker
         fieldId={checkNotNull(fieldInfo.fieldId)}
