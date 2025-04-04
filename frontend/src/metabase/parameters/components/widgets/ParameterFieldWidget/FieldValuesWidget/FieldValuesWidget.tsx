@@ -22,6 +22,7 @@ import type { LayoutRendererArgs } from "metabase/components/TokenField/TokenFie
 import ValueComponent from "metabase/components/Value";
 import CS from "metabase/css/core/index.css";
 import Fields from "metabase/entities/fields";
+import { useTranslateContent2 } from "metabase/i18n/components/ContentTranslationContext";
 import { parseNumber } from "metabase/lib/number";
 import { defer } from "metabase/lib/promise";
 import { connect, useDispatch } from "metabase/lib/redux";
@@ -71,7 +72,6 @@ import {
   shouldList,
   showRemapping,
 } from "./utils";
-import { useTranslateContent2 } from "metabase/i18n/components/ContentTranslationContext";
 
 const MAX_SEARCH_RESULTS = 100;
 const COMBOBOX_WIDTH = 364;
@@ -258,7 +258,6 @@ export const FieldValuesWidgetInner = forwardRef<
             entityId: field.getUniqueId(),
           }),
       );
-      console.log("@m925uhk0", "fieldValues", fieldValues);
 
       return dedupeValues(fieldValues);
     } else {
