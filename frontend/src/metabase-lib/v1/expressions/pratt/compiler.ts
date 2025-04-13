@@ -116,11 +116,11 @@ const MAP_TYPE = {
 function getDimension(name: string, node: Node, ctx: Context) {
   assert(typeof name === "string", t`Invalid dimension name: ${name}`);
 
-  const kind = MAP_TYPE[ctx.type as keyof typeof MAP_TYPE] ?? "dimension";
+  const kind = MAP_TYPE[ctx.type as keyof typeof MAP_TYPE] ?? "field";
 
   if (!ctx.resolver) {
     return {
-      operator: kind as Lib.ExpressionOperator,
+      operator: "dimension" as Lib.ExpressionOperator,
       options: {},
       args: [name],
     };
@@ -383,10 +383,16 @@ function compileUnaryOp(
     throw new CompileError(t`Expected expression`, node);
   }
 
+  assert(isDefinedClause(operator), t`Unknown operator ${operator}`);
+
+  const defn = getClauseDefinition(operator);
+  const type = defn?.argType?.(0, node.children, ctx.type) ?? defn?.args[0];
+  const arg = compileNode(node.children[0], { ...ctx, type });
+
   return withNode(node, {
     operator,
     options: {},
-    args: [compileNode(node.children[0], ctx)],
+    args: [arg],
   });
 }
 
@@ -402,13 +408,20 @@ function compileInfixOp(
     throw new CompileError(t`Expected expression`, node);
   }
 
-  const leftNode = compileNode(node.children[0], ctx);
+  assert(isDefinedClause(operator), t`Unknown operator ${operator}`);
+
+  const defn = getClauseDefinition(operator);
+  const leftType = defn?.argType?.(0, node.children, ctx.type) ?? defn?.args[0];
+  const rightType =
+    defn?.argType?.(0, node.children, ctx.type) ?? defn?.args[1];
+
+  const leftNode = compileNode(node.children[0], { ...ctx, type: leftType });
   const left =
     Lib.isExpressionParts(leftNode) && leftNode.operator === operator
       ? leftNode.args
       : [leftNode];
 
-  const rightNode = compileNode(node.children[1], ctx);
+  const rightNode = compileNode(node.children[1], { ...ctx, type: rightType });
   const right = [rightNode];
 
   return withNode(node, {
