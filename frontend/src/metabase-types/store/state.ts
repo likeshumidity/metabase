@@ -9,6 +9,7 @@ import type { DashboardState } from "./dashboard";
 import type { DownloadsState } from "./downloads";
 import type { EmbedState } from "./embed";
 import type { EntitiesState } from "./entities";
+import type { I18nState } from "./i18n";
 import type { ParametersState } from "./parameters";
 import type { QueryBuilderState } from "./qb";
 import type { RequestsState } from "./requests";
@@ -37,6 +38,7 @@ export interface State {
   modal: ModalName;
   undo: UndoState;
   downloads: DownloadsState;
+  i18n: I18nState;
 }
 
 export type Dispatch<T = any> = (action: T) => unknown | Promise<unknown>;
