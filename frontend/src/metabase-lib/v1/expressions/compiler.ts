@@ -1,5 +1,4 @@
 import * as Lib from "metabase-lib";
-import type { Expression } from "metabase-types/api";
 
 import { type ExpressionError, renderError } from "./errors";
 import { type Resolver, fieldResolver } from "./field-resolver";
@@ -10,13 +9,11 @@ import type { StartRule } from "./types";
 export type CompileResult =
   | {
       error: ExpressionError;
-      expression: null;
       expressionParts: null;
       expressionClause: null;
     }
   | {
       error: null;
-      expression: Expression;
       expressionParts: Lib.ExpressionParts | Lib.ExpressionArg;
       expressionClause: Lib.ExpressionClause;
     };
@@ -49,23 +46,15 @@ export function compileExpression({
           fn: resolver,
         })
       : compiled;
-
     const expressionClause = Lib.expressionClause(resolved);
-    const expression = Lib.legacyExpressionForExpressionClause(
-      query,
-      stageIndex,
-      expressionClause,
-    );
 
     return {
-      expression,
       expressionParts: resolved,
       expressionClause,
       error: null,
     };
   } catch (error) {
     return {
-      expression: null,
       expressionParts: null,
       expressionClause: null,
       error: renderError(error),
