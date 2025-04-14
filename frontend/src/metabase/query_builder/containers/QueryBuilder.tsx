@@ -18,7 +18,7 @@ import { useFavicon } from "metabase/hooks/use-favicon";
 import { useForceUpdate } from "metabase/hooks/use-force-update";
 import { useLoadingTimer } from "metabase/hooks/use-loading-timer";
 import { useWebNotification } from "metabase/hooks/use-web-notification";
-import { ContentTranslationProvider } from "metabase/i18n/components/ContentTranslationContext";
+import { ContentTranslationLoader } from "metabase/i18n/components/ContentTranslationLoader";
 import { connect, useSelector } from "metabase/lib/redux";
 import { closeNavbar } from "metabase/redux/app";
 import { getIsNavbarOpen } from "metabase/selectors/app";
@@ -414,28 +414,27 @@ function QueryBuilderInner(props: QueryBuilderInnerProps) {
 
   return (
     <>
-      <ContentTranslationProvider>
-        <View
-          {...props}
-          modal={uiControls.modal}
-          recentlySaved={uiControls.recentlySaved}
-          onOpenModal={openModal}
-          onCloseModal={closeModal}
-          onSave={handleSave}
-          onCreate={handleCreate}
-          handleResize={forceUpdateDebounced}
-          toggleBookmark={onClickBookmark}
-          onDismissToast={onDismissToast}
-          onConfirmToast={onConfirmToast}
-          isShowingToaster={isShowingToaster}
-        />
+      <ContentTranslationLoader />
+      <View
+        {...props}
+        modal={uiControls.modal}
+        recentlySaved={uiControls.recentlySaved}
+        onOpenModal={openModal}
+        onCloseModal={closeModal}
+        onSave={handleSave}
+        onCreate={handleCreate}
+        handleResize={forceUpdateDebounced}
+        toggleBookmark={onClickBookmark}
+        onDismissToast={onDismissToast}
+        onConfirmToast={onConfirmToast}
+        isShowingToaster={isShowingToaster}
+      />
 
-        <LeaveRouteConfirmModal
-          isEnabled={shouldShowUnsavedChangesWarning && !isCallbackScheduled}
-          isLocationAllowed={isLocationAllowed}
-          route={route}
-        />
-      </ContentTranslationProvider>
+      <LeaveRouteConfirmModal
+        isEnabled={shouldShowUnsavedChangesWarning && !isCallbackScheduled}
+        isLocationAllowed={isLocationAllowed}
+        route={route}
+      />
     </>
   );
 }

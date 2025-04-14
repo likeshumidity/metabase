@@ -8,13 +8,13 @@ import type {
 } from "metabase/core/components/Sortable";
 import { SortableList } from "metabase/core/components/Sortable";
 import CS from "metabase/css/core/index.css";
+import { ContentTranslationLoader } from "metabase/i18n/components/ContentTranslationLoader";
 import type { ParametersListProps } from "metabase/parameters/components/ParametersList/types";
 import { getVisibleParameters } from "metabase/parameters/utils/ui";
 import { Icon } from "metabase/ui";
 import type { Parameter, ParameterId } from "metabase-types/api";
 
 import { ParameterWidget } from "../ParameterWidget";
-import { ContentTranslationProvider } from "metabase/i18n/components/ContentTranslationContext";
 
 const getId = (valuePopulatedParameter: Parameter) =>
   valuePopulatedParameter.id;
@@ -107,7 +107,8 @@ export const ParametersList = ({
         vertical ? CS.flexColumn : CS.flexRow,
       )}
     >
-      <ContentTranslationProvider>
+      <>
+        <ContentTranslationLoader />
         <SortableList
           items={visibleValuePopulatedParameters}
           getId={getId}
@@ -115,7 +116,7 @@ export const ParametersList = ({
           onSortEnd={handleSortEnd}
           sensors={[pointerSensor]}
         />
-      </ContentTranslationProvider>
+      </>
     </div>
   ) : null;
 };

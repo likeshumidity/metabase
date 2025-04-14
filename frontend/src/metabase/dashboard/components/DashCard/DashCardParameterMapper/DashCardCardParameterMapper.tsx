@@ -8,7 +8,7 @@ import {
   getQuestionByCard,
 } from "metabase/dashboard/selectors";
 import { isNativeDashCard, isQuestionDashCard } from "metabase/dashboard/utils";
-import { useTranslateContent } from "metabase/i18n/components/ContentTranslationContext";
+import { useTranslateContent } from "metabase/i18n/hooks";
 import { connect } from "metabase/lib/redux";
 import {
   type ParameterMappingOption,

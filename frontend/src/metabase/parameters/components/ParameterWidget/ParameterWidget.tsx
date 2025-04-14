@@ -6,7 +6,7 @@ import { Sortable } from "metabase/core/components/Sortable";
 import CS from "metabase/css/core/index.css";
 import DashboardS from "metabase/css/dashboard.module.css";
 import type { DashboardFullscreenControls } from "metabase/dashboard/types";
-import { useTranslateContent } from "metabase/i18n/components/ContentTranslationContext";
+import { useTranslateContent } from "metabase/i18n/hooks";
 import EmbedFrameS from "metabase/public/components/EmbedFrame/EmbedFrame.module.css";
 import { Box, Flex, Icon } from "metabase/ui";
 import type Question from "metabase-lib/v1/Question";

@@ -58,7 +58,7 @@ import { useFavicon } from "metabase/hooks/use-favicon";
 import { useLoadingTimer } from "metabase/hooks/use-loading-timer";
 import { useUniqueId } from "metabase/hooks/use-unique-id";
 import { useWebNotification } from "metabase/hooks/use-web-notification";
-import { ContentTranslationProvider } from "metabase/i18n/components/ContentTranslationContext";
+import { ContentTranslationLoader } from "metabase/i18n/components/ContentTranslationLoader";
 import { parseHashOptions } from "metabase/lib/browser";
 import { connect, useDispatch } from "metabase/lib/redux";
 import * as Urls from "metabase/lib/urls";
@@ -335,7 +335,8 @@ const DashboardApp = (props: DashboardAppProps) => {
         isDirty={isDirty}
         isEditing={isEditing}
       />
-      <ContentTranslationProvider>
+      <>
+        <ContentTranslationLoader />
         <Dashboard
           dashboardId={dashboardId}
           editingOnLoad={editingOnLoad}
@@ -409,7 +410,7 @@ const DashboardApp = (props: DashboardAppProps) => {
           fetchDashboard={fetchDashboard}
           fetchDashboardCardData={fetchDashboardCardData}
         />
-      </ContentTranslationProvider>
+      </>
       {/* For rendering modal urls */}
       {props.children}
     </div>

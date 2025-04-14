@@ -24,7 +24,7 @@ import type {
 } from "metabase/dashboard/types";
 import Bookmarks from "metabase/entities/bookmarks";
 import Dashboards from "metabase/entities/dashboards";
-import { ContentTranslationProvider } from "metabase/i18n/components/ContentTranslationContext";
+import { ContentTranslationLoader } from "metabase/i18n/components/ContentTranslationLoader";
 import { useDispatch } from "metabase/lib/redux";
 import { getHasDataAccess, getHasNativeWrite } from "metabase/selectors/data";
 import { FullWidthContainer } from "metabase/styled-components/layout/FullWidthContainer";
@@ -401,7 +401,8 @@ function Dashboard(props: DashboardProps) {
   };
 
   return (
-    <ContentTranslationProvider>
+    <>
+      <ContentTranslationLoader />
       <DashboardLoadingAndErrorWrapper
         isFullHeight={isEditing || isSharing}
         isFullscreen={isFullscreen}
@@ -563,7 +564,7 @@ function Dashboard(props: DashboardProps) {
           );
         }}
       </DashboardLoadingAndErrorWrapper>
-    </ContentTranslationProvider>
+    </>
   );
 }
 
