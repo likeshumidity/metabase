@@ -80,7 +80,6 @@ function _CartesianChart(props: VisualizationProps) {
 
   const chartRef = useRef<EChartsType>();
 
-  const title = settings["card.title"] || card.name;
   const description = settings["card.description"];
 
   const legendItems = useMemo(
@@ -145,7 +144,7 @@ function _CartesianChart(props: VisualizationProps) {
     <CartesianChartRoot isQueryBuilder={isQueryBuilder}>
       {showTitle && (
         <LegendCaption
-          title={title}
+          title={settings["card.title"]}
           description={description}
           icon={headerIcon}
           actionButtons={actionButtons}
