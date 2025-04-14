@@ -4,6 +4,7 @@ import _ from "underscore";
 import { tag_names } from "cljs/metabase.models.params.shared";
 import { getColumnIcon } from "metabase/common/utils/columns";
 import { isActionDashCard, isVirtualDashCard } from "metabase/dashboard/utils";
+import type { TCFunc } from "metabase/i18n/types";
 import { getGroupName } from "metabase/querying/filters/utils/groups";
 import { getAllowedIframeAttributes } from "metabase/visualizations/visualizations/IFrameViz/utils";
 import * as Lib from "metabase-lib";
@@ -35,7 +36,6 @@ import type {
   WritebackParameter,
 } from "metabase-types/api";
 import { isStructuredDimensionTarget } from "metabase-types/guards";
-import { TCFunc } from "metabase/i18n/components/ContentTranslationContext";
 
 export type StructuredQuerySectionOption = {
   sectionName: string;

@@ -1,8 +1,8 @@
 import * as ML from "cljs/metabase.lib.js";
 
 import { removeClause } from "./query";
-import { TCFunc } from "metabase/i18n/components/ContentTranslationContext";
-import type { BreakoutClause, ColumnMetadata, Query } from "./types";
+import type { BreakoutClause, ColumnMetadata, Query, TCFunc } from "./types";
+
 export function breakoutableColumns(
   query: Query,
   stageIndex: number,

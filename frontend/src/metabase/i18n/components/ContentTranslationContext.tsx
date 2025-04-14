@@ -1,14 +1,13 @@
-import { type ReactNode, createContext, useContext } from "react";
+import { type ReactNode, createContext, useContext, useMemo } from "react";
 
 import { useListContentTranslationsQuery } from "metabase/api/content-translation";
 import { useLocale } from "metabase/common/hooks";
 
-import type { ContentTranslationContextObject } from "../types";
+import type { ContentTranslationContextObject, TCFunc } from "../types";
 import { translateContentString } from "../utils";
 
 export const ContentTranslationContext =
   createContext<ContentTranslationContextObject>({
-    shouldLocalize: true,
     dictionary: [],
     locale: "en",
   });
@@ -28,11 +27,13 @@ export const ContentTranslationProvider = ({
     console.error("Error while retrieving content translations", error);
   }
 
-  const contextValue = {
-    dictionary: data?.data || [],
-    locale,
-    shouldLocalize: true,
-  };
+  const contextValue = useMemo(
+    () => ({
+      dictionary: data?.data || [],
+      locale,
+    }),
+    [data?.data, locale],
+  );
 
   return (
     <ContentTranslationContext.Provider value={contextValue}>
@@ -41,15 +42,14 @@ export const ContentTranslationProvider = ({
   );
 };
 
-export type TCFunc = <TypeOfArgument>(msgid?: TypeOfArgument) => TypeOfArgument;
-
 export const useTranslateContent = () => {
   const context = useContext(ContentTranslationContext);
+  const contentTranslationFunction: TCFunc = useMemo(
+    () =>
+      <TypeOfMsgidArgument,>(msgid: TypeOfMsgidArgument) =>
+        translateContentString(context, msgid),
+    [context],
+  );
 
-  const tcFunc: TCFunc = <TypeOfArgument,>(msgid?: TypeOfArgument) =>
-    (msgid && typeof msgid === "string"
-      ? translateContentString(msgid, context)
-      : msgid) as TypeOfArgument;
-
-  return tcFunc;
+  return contentTranslationFunction;
 };

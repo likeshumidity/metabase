@@ -9,7 +9,6 @@ export type ContentTranslationDictionaryEntry = {
 export type ContentTranslationDictionary = ContentTranslationDictionaryEntry[];
 
 export type ContentTranslationContextObject = {
-  shouldLocalize: boolean;
   locale?: string;
   dictionary?: ContentTranslationDictionary;
 };
@@ -18,3 +17,7 @@ export type ContentTranslationContextObject = {
  * strings (sometimes called 'msgstrs') This is a dictionary for a single
  * locale, so no locale information is stored in it */
 export type DictionaryForLocale = Record<string, string>;
+
+export type TCFunc = <TypeOfArgument>(
+  msgid: TypeOfArgument,
+) => string | TypeOfArgument;

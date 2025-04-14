@@ -1,4 +1,4 @@
-import type { TCFunc } from "metabase/i18n/components/ContentTranslationContext";
+import type { TCFunc } from "metabase/i18n/types";
 import * as Lib from "metabase-lib";
 
 import type { ListItem, ListSection } from "./types";

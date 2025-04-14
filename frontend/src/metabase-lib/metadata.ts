@@ -45,13 +45,12 @@ import type {
   QueryDisplayInfo,
   SegmentDisplayInfo,
   SegmentMetadata,
+  TCFunc,
   TableDisplayInfo,
   TableMetadata,
 } from "./types";
 import type Field from "./v1/metadata/Field";
 import type Metadata from "./v1/metadata/Metadata";
-
-type TCFunc = <TypeOfArgument>(msgid?: TypeOfArgument) => TypeOfArgument;
 
 export function metadataProvider(
   databaseId: DatabaseId | null,

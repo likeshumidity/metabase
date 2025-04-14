@@ -1,6 +1,7 @@
 import type { EChartsCoreOption } from "echarts/core";
 import type { OptionSourceData } from "echarts/types/src/util/types";
 
+import type { TCFunc } from "metabase/i18n/types";
 import {
   NEGATIVE_STACK_TOTAL_DATA_KEY,
   OTHER_DATA_KEY,
@@ -23,7 +24,6 @@ import { getBarSeriesDataLabelKey } from "../model/util";
 
 import { getGoalLineSeriesOption } from "./goal-line";
 import { getTrendLinesOption } from "./trend-line";
-import { TCFunc } from "metabase/i18n/components/ContentTranslationContext";
 
 export const getSharedEChartsOptions = (isAnimated: boolean) => ({
   useUTC: true,

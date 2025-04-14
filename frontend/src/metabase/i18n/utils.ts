@@ -1,13 +1,24 @@
 import type { ContentTranslationContextObject } from "./types";
 
 /** Translate a user-generated string */
-export const translateContentString = (
-  msgid: string,
+export const translateContentString = <TypeOfMsgidArgument>(
   context: ContentTranslationContextObject,
+  /** We often need to pass in variables that have the type string|undefined,
+   * so we allow variables of any type to be passed in, and they'll be
+   * translated only if they're strings. */
+  msgid: TypeOfMsgidArgument,
 ) => {
-  const { shouldLocalize = true, dictionary = [], locale } = context;
+  if (typeof msgid !== "string") {
+    return msgid;
+  }
 
-  if (!shouldLocalize || !dictionary.length) {
+  if (!msgid.trim()) {
+    return msgid;
+  }
+
+  const { dictionary = [], locale } = context;
+
+  if (!dictionary.length) {
     return msgid;
   }
 

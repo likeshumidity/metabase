@@ -1,6 +1,7 @@
 import type { XAXisOption, YAXisOption } from "echarts/types/dist/shared";
 import type { AxisBaseOptionCommon } from "echarts/types/src/coord/axisCommonTypes";
 
+import type { TCFunc } from "metabase/i18n/types";
 import { parseNumberValue } from "metabase/lib/number";
 import { CHART_STYLE } from "metabase/visualizations/echarts/cartesian/constants/style";
 import type {
@@ -22,7 +23,6 @@ import { getScaledMinAndMax } from "../model/axis";
 import { isNumericAxis, isTimeSeriesAxis } from "../model/guards";
 
 import { getTicksOptions } from "./ticks";
-import { TCFunc } from "metabase/i18n/components/ContentTranslationContext";
 
 const NORMALIZED_RANGE = { min: 0, max: 1 };
 
@@ -212,8 +212,6 @@ export const buildDimensionAxis = (
   renderingContext: RenderingContext,
   tc?: TCFunc,
 ): XAXisOption => {
-  console.log("@m9251beg", "tc in dimensionaxis", tc);
-
   const xAxisModel = chartModel.xAxisModel;
 
   if (isNumericAxis(xAxisModel)) {
