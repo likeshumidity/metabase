@@ -3,7 +3,12 @@ import { t } from "ttag";
 import { type NumberValue, parseNumber } from "metabase/lib/number";
 import * as Lib from "metabase-lib";
 
-import { getClauseDefinition, getMBQLName, isDefinedClause } from "../config";
+import {
+  type DefinedClauseName,
+  getClauseDefinition,
+  getMBQLName,
+  isDefinedClause,
+} from "../config";
 import { CompileError } from "../errors";
 import {
   isBigIntLiteral,
@@ -230,11 +235,12 @@ function compileFunctionCall(node: Node, ctx: Context): Lib.ExpressionParts {
 
   const text = node.token?.text.trim().toLowerCase();
   const operator = getMBQLName(text) ?? text;
-  const args = compileArgList(
-    node.children[0],
-    operator as Lib.ExpressionOperator,
-    ctx,
-  );
+
+  if (!isDefinedClause(operator)) {
+    throw new CompileError(t`Unknown function ${operator}`, node);
+  }
+
+  const args = compileArgList(node.children[0], operator, ctx);
   const options: Lib.ExpressionOptions = {};
 
   if (!isDefinedClause(operator)) {
@@ -265,14 +271,12 @@ function compileFunctionCall(node: Node, ctx: Context): Lib.ExpressionParts {
 
 function compileArgList(
   node: Node,
-  operator: Lib.ExpressionOperator,
+  operator: DefinedClauseName,
   ctx: Context,
 ): (Lib.ExpressionParts | Lib.ExpressionArg)[] {
   assert(node.type === ARG_LIST, t`Invalid node type`);
 
   const defn = getClauseDefinition(operator);
-  assert(defn, t`Unknown operator ${operator}`);
-
   return node.children.map((child, index) => {
     if (index >= defn.args.length && !defn.multiple) {
       // as-is, optional object for e.g. ends-with, time-interval, etc
