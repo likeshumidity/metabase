@@ -27,7 +27,7 @@ export const contentTranslationApi = Api.injectEndpoints({
         transformResponse: (
           response: ListContentTranslationsResponse,
         ): DictionaryMap => {
-          const dictionaryArray: DictionaryArray = response.data;
+          const dictionaryArray = response.data;
 
           // Convert the array to a Map for faster lookups
           const dictionaryMap: DictionaryMap =
