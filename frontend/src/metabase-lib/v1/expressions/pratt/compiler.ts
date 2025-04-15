@@ -12,6 +12,7 @@ import {
   isIntegerLiteral,
   isStringLiteral,
 } from "../matchers";
+import type { ExpressionType, StartRule } from "../types";
 
 import {
   ADD,
