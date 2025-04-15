@@ -214,7 +214,6 @@ function renderItemWrapper(content: ReactNode) {
   return <HoverParent>{content}</HoverParent>;
 }
 
-/** Sort an array by display name, since some display names may be translated */
 const sortedByDisplayName = (arr: { displayName: string }[]) => {
   return arr.toSorted((a, b) =>
     (a.displayName || "").localeCompare(b.displayName),
