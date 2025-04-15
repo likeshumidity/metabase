@@ -2,12 +2,6 @@ import type { RouterState } from "react-router-redux";
 
 import type { User } from "metabase-types/api";
 
-// Use dynamic import to prevent circular dependencies
-type ContentTranslationsState = {
-  dictionary: Map<string, string>;
-  locale: string;
-};
-
 import type { AdminState } from "./admin";
 import type { AppState } from "./app";
 import type { AuthState } from "./auth";
@@ -43,7 +37,6 @@ export interface State {
   modal: ModalName;
   undo: UndoState;
   downloads: DownloadsState;
-  contentTranslations?: ContentTranslationsState;
 }
 
 export type Dispatch<T = any> = (action: T) => unknown | Promise<unknown>;
