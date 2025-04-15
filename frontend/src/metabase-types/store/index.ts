@@ -6,7 +6,6 @@ export * from "./dashboard";
 export * from "./downloads";
 export * from "./embed";
 export * from "./entities";
-export * from "./i18n";
 export * from "./qb";
 export * from "./requests";
 export * from "./settings";
