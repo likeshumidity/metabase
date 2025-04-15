@@ -8,6 +8,7 @@ import type {
 } from "react";
 import { t } from "ttag";
 import type { AnySchema } from "yup";
+import _ from "underscore";
 
 import noResultsSource from "assets/img/no_results.svg";
 import {
@@ -611,6 +612,14 @@ export const PLUGIN_RESOURCE_DOWNLOADS = {
     hide_download_button?: boolean | null;
     downloads?: string | boolean | null;
   }) => ({ pdf: true, results: true }),
+};
+
+export const PLUGIN_CONTENT_TRANSLATION = {
+  isContentTranslationEnabled: false,
+  ContentTranslationLoader: PluginPlaceholder,
+  // This hook returns a function that leaves the given string untranslated
+  // _.identity simply returns the argument it receives
+  useTranslateContent: () => _.identity,
 };
 
 export const PLUGIN_DB_ROUTING = {

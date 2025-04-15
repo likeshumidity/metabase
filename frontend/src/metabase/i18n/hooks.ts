@@ -1,23 +1,8 @@
-import { useMemo } from "react";
-
-import { useListContentTranslationsQuery } from "metabase/api/content-translation";
-import { useLocale } from "metabase/common/hooks";
-
+import { PLUGIN_CONTENT_TRANSLATION } from "metabase/plugins";
 import type { TCFunc } from "./types";
-import { translateContentString } from "./utils";
 
+// To keep the components that invoke the plugin hook tidier, they can invoke
+// this facade, which delegates to the plugin implementation
 export const useTranslateContent = (): TCFunc => {
-  const locale = useLocale();
-  const { data: dictionaryMap } = useListContentTranslationsQuery({
-    locale,
-  });
-
-  const contentTranslationFunction: TCFunc = useMemo(
-    () =>
-      <TypeOfMsgidArgument>(msgid: TypeOfMsgidArgument) =>
-        translateContentString(dictionaryMap, msgid),
-    [dictionaryMap],
-  );
-
-  return contentTranslationFunction;
+  return PLUGIN_CONTENT_TRANSLATION.useTranslateContent();
 };

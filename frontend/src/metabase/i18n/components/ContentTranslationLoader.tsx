@@ -1,8 +1,7 @@
-import { useListContentTranslationsQuery } from "metabase/api/content-translation";
-import { useLocale } from "metabase/common/hooks";
+import { PLUGIN_CONTENT_TRANSLATION } from "metabase/plugins";
 
+// This is a placeholder component that just delegates to the plugin implementation
 export const ContentTranslationLoader = () => {
-  const locale = useLocale();
-  useListContentTranslationsQuery({ locale });
-  return null;
+  // We use the plugin version to allow enterprise edition to override this
+  return <PLUGIN_CONTENT_TRANSLATION.ContentTranslationLoader />;
 };
