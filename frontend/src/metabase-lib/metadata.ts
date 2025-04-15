@@ -195,31 +195,10 @@ export function groupColumns(columns: ColumnMetadata[]): ColumnGroup[] {
   return ML.group_columns(columns);
 }
 
-const hasDisplayNames = (
-  arr: ColumnMetadata[],
-): arr is ColumnMetadataWithDisplayName[] => {
-  return "displayName" in arr[0];
-};
-
-type ColumnMetadataWithDisplayName = ColumnMetadata & {
-  displayName: string;
-};
-
-// FIXME: translation may not be needed here. i'm not sure this has display names in it
 export function getColumnsFromColumnGroup(
   group: ColumnGroup,
-  tc?: ContentTranslationFunction,
 ): ColumnMetadata[] {
-  const columns: ColumnMetadata[] = ML.columns_group_columns(group);
-  if (tc && hasDisplayNames(columns)) {
-    return columns
-      .map((col) => ({
-        ...col,
-        displayName: tc(col.displayName),
-      }))
-      .toSorted((a, b) => a.displayName.localeCompare(b.displayName));
-  }
-  return columns;
+  return ML.columns_group_columns(group);
 }
 
 export function describeTemporalUnit(

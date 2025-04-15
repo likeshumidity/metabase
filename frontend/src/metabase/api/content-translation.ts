@@ -24,6 +24,7 @@ export const contentTranslationApi = Api.injectEndpoints({
           url: "/api/dictionary/",
           params,
         }),
+
         transformResponse: (
           response: ListContentTranslationsResponse,
         ): DictionaryMap => {

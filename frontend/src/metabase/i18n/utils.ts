@@ -5,7 +5,9 @@ import type { DictionaryMap } from "./types";
  * Terminology: A "msgid" is a 'raw', untranslated string. A "msgstr" is a
  * translation of a msgid.
  * */
-export const translateContentString = <TypeOfMsgidArgument>(
+export const translateContentString = <
+  TypeOfMsgidArgument extends string | null | undefined,
+>(
   dictionaryMap: DictionaryMap | undefined,
   /** We often need to pass in variables that have the type string|undefined,
    * so we allow variables of any type to be passed in, and they'll be

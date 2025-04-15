@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useCallback } from "react";
 
 import { useListContentTranslationsQuery } from "metabase/api/content-translation";
 import { useLocale } from "metabase/common/hooks";
@@ -12,10 +12,8 @@ export const useTranslateContent = (): ContentTranslationFunction => {
     locale,
   });
 
-  return useMemo(
-    () =>
-      <TypeOfMsgidArgument>(msgid: TypeOfMsgidArgument) =>
-        translateContentString(dictionaryMap, msgid),
+  return useCallback(
+    (msgid: any) => translateContentString(dictionaryMap, msgid),
     [dictionaryMap],
   );
 };
