@@ -924,41 +924,28 @@
   - link-table?: Is every Field a foreign key to another table"
   [tables]
   (when (not-empty tables)
-    (let [field-count (->> (mdb.query/query {:select   [:table_id [:%count.* "count"]]
+    (let [table-stats (->> (mdb.query/query {:select   [:table_id
+                                                        [:%count.* "count"]
+                                                        [[:count [:case [:or [:not= :semantic_type "type/PK"]
+                                                                         [:= :semantic_type nil]]
+                                                                  [:inline 1] :else [:inline nil]]]
+                                                         :count_non_pks]
+                                                        [[:count [:case [:in :semantic_type ["type/PK" "type/FK"]]
+                                                                  [:inline 1] :else [:inline nil]]]
+                                                         :count_pks_and_fks]]
                                              :from     [:metabase_field]
                                              :where    [:and [:in :table_id (map u/the-id tables)]
                                                         [:= :active true]]
                                              :group-by [:table_id]})
-                           (into {} (map (juxt :table_id :count))))
-          list-like?  (->> (when-let [candidates (->> field-count
-                                                      (filter (comp (partial >= 2) val))
-                                                      (map key)
-                                                      not-empty)]
-                             (mdb.query/query {:select   [:table_id]
-                                               :from     [:metabase_field]
-                                               :where    [:and [:in :table_id candidates]
-                                                          [:= :active true]
-                                                          [:or [:not= :semantic_type "type/PK"]
-                                                           [:= :semantic_type nil]]]
-                                               :group-by [:table_id]
-                                               :having   [:= :%count.* 1]}))
-                           (into #{} (map :table_id)))
-          ;; Table comprised entierly of join keys
-          link-table? (when (seq field-count)
-                        (->> (mdb.query/query {:select   [:table_id [:%count.* "count"]]
-                                               :from     [:metabase_field]
-                                               :where    [:and [:in :table_id (keys field-count)]
-                                                          [:= :active true]
-                                                          [:in :semantic_type ["type/PK" "type/FK"]]]
-                                               :group-by [:table_id]})
-                             (filter (fn [{:keys [table_id count]}]
-                                       (= count (field-count table_id))))
-                             (into #{} (map :table_id))))]
-      (for [table tables]
-        (let [table-id (u/the-id table)]
-          (assoc table :stats {:num-fields  (field-count table-id 0)
-                               :list-like?  (boolean (contains? list-like? table-id))
-                               :link-table? (boolean (contains? link-table? table-id))}))))))
+                           (map (juxt :table_id (juxt :count :count_non_pks :count_pks_and_fks)))
+                           (into {}))]
+      (for [table tables
+            :let [table-id (u/the-id table)
+                  [field-count non-pk-count pk-and-fk-count] (get table-stats table-id)
+                  any-fields? (not (nil? field-count))]]
+        (assoc table :stats {:num-fields  (or field-count 0)
+                             :list-like?  (and any-fields? (>= field-count 2) (= 1 non-pk-count))
+                             :link-table? (and any-fields? (= field-count pk-and-fk-count))})))))
 
 (def ^:private ^:const ^Long max-candidate-tables
   "Maximal number of tables per schema shown in `candidate-tables`."
