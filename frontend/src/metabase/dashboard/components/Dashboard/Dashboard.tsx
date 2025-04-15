@@ -24,7 +24,6 @@ import type {
 } from "metabase/dashboard/types";
 import Bookmarks from "metabase/entities/bookmarks";
 import Dashboards from "metabase/entities/dashboards";
-import { ContentTranslationLoader } from "metabase/i18n/components/ContentTranslationLoader";
 import { useDispatch } from "metabase/lib/redux";
 import { getHasDataAccess, getHasNativeWrite } from "metabase/selectors/data";
 import { FullWidthContainer } from "metabase/styled-components/layout/FullWidthContainer";
@@ -401,170 +400,165 @@ function Dashboard(props: DashboardProps) {
   };
 
   return (
-    <>
-      <ContentTranslationLoader />
-      <DashboardLoadingAndErrorWrapper
-        isFullHeight={isEditing || isSharing}
-        isFullscreen={isFullscreen}
-        isNightMode={shouldRenderAsNightMode}
-        loading={!dashboard}
-        error={error}
-        noWrapper={noLoaderWrapper}
-      >
-        {() => {
-          if (!dashboard) {
-            return null;
-          }
+    <DashboardLoadingAndErrorWrapper
+      isFullHeight={isEditing || isSharing}
+      isFullscreen={isFullscreen}
+      isNightMode={shouldRenderAsNightMode}
+      loading={!dashboard}
+      error={error}
+      noWrapper={noLoaderWrapper}
+    >
+      {() => {
+        if (!dashboard) {
+          return null;
+        }
 
-          const isEmpty =
-            !dashboardHasCards || (dashboardHasCards && !tabHasCards);
+        const isEmpty =
+          !dashboardHasCards || (dashboardHasCards && !tabHasCards);
 
-          return (
-            <Flex direction="column" mih="100%" w="100%" flex="1 0 auto">
-              {dashboard.archived && (
-                <ArchivedEntityBanner
-                  name={dashboard.name}
-                  entityType="dashboard"
-                  canMove={canWrite}
-                  canRestore={canRestore}
-                  canDelete={canDelete}
-                  onUnarchive={async () => {
-                    await dispatch(setArchivedDashboard(false));
-                    await dispatch(Bookmarks.actions.invalidateLists());
-                  }}
-                  onMove={({ id }) =>
-                    dispatch(moveDashboardToCollection({ id }))
-                  }
-                  onDeletePermanently={() => {
-                    const { id } = dashboard;
-                    const deleteAction = Dashboards.actions.delete({ id });
-                    dispatch(deletePermanently(deleteAction));
-                  }}
-                />
-              )}
+        return (
+          <Flex direction="column" mih="100%" w="100%" flex="1 0 auto">
+            {dashboard.archived && (
+              <ArchivedEntityBanner
+                name={dashboard.name}
+                entityType="dashboard"
+                canMove={canWrite}
+                canRestore={canRestore}
+                canDelete={canDelete}
+                onUnarchive={async () => {
+                  await dispatch(setArchivedDashboard(false));
+                  await dispatch(Bookmarks.actions.invalidateLists());
+                }}
+                onMove={({ id }) => dispatch(moveDashboardToCollection({ id }))}
+                onDeletePermanently={() => {
+                  const { id } = dashboard;
+                  const deleteAction = Dashboards.actions.delete({ id });
+                  dispatch(deletePermanently(deleteAction));
+                }}
+              />
+            )}
 
+            <Box
+              component="header"
+              className={cx(S.DashboardHeaderContainer, {
+                [S.isFullscreen]: isFullscreen,
+                [S.isNightMode]: shouldRenderAsNightMode,
+              })}
+              data-element-id="dashboard-header-container"
+              data-testid="dashboard-header-container"
+            >
+              {/**
+               * Do not conditionally render `<DashboardHeader />` as it calls
+               * `useDashboardTabs` under the hood. This hook sets `selectedTabId`
+               * in Redux state which kicks off a fetch for the dashboard cards.
+               */}
+              <DashboardHeader
+                parameterQueryParams={parameterQueryParams}
+                dashboard={dashboard}
+                isNightMode={shouldRenderAsNightMode}
+                isFullscreen={isFullscreen}
+                onRefreshPeriodChange={onRefreshPeriodChange}
+                dashboardBeforeEditing={props.dashboardBeforeEditing}
+                onFullscreenChange={props.onFullscreenChange}
+                isAdditionalInfoVisible={props.isAdditionalInfoVisible}
+                hasNightModeToggle={props.hasNightModeToggle}
+                onNightModeChange={props.onNightModeChange}
+                refreshPeriod={props.refreshPeriod}
+                setRefreshElapsedHook={props.setRefreshElapsedHook}
+              />
+            </Box>
+
+            <Flex
+              pos="relative"
+              miw={0}
+              mih={0}
+              className={cx(S.DashboardBody, {
+                [S.isEditingOrSharing]: isEditing || isSharing,
+              })}
+            >
               <Box
-                component="header"
-                className={cx(S.DashboardHeaderContainer, {
-                  [S.isFullscreen]: isFullscreen,
-                  [S.isNightMode]: shouldRenderAsNightMode,
+                className={cx(S.ParametersAndCardsContainer, {
+                  [S.shouldMakeDashboardHeaderStickyAfterScrolling]:
+                    !isFullscreen && (isEditing || isSharing),
+                  [S.notEmpty]: !isEmpty,
                 })}
-                data-element-id="dashboard-header-container"
-                data-testid="dashboard-header-container"
+                id={DASHBOARD_PDF_EXPORT_ROOT_ID}
+                data-element-id="dashboard-parameters-and-cards"
+                data-testid="dashboard-parameters-and-cards"
               >
-                {/**
-                 * Do not conditionally render `<DashboardHeader />` as it calls
-                 * `useDashboardTabs` under the hood. This hook sets `selectedTabId`
-                 * in Redux state which kicks off a fetch for the dashboard cards.
-                 */}
-                <DashboardHeader
-                  parameterQueryParams={parameterQueryParams}
-                  dashboard={dashboard}
-                  isNightMode={shouldRenderAsNightMode}
-                  isFullscreen={isFullscreen}
-                  onRefreshPeriodChange={onRefreshPeriodChange}
-                  dashboardBeforeEditing={props.dashboardBeforeEditing}
-                  onFullscreenChange={props.onFullscreenChange}
-                  isAdditionalInfoVisible={props.isAdditionalInfoVisible}
-                  hasNightModeToggle={props.hasNightModeToggle}
-                  onNightModeChange={props.onNightModeChange}
-                  refreshPeriod={props.refreshPeriod}
-                  setRefreshElapsedHook={props.setRefreshElapsedHook}
-                />
+                <DashboardParameterPanel isFullscreen={isFullscreen} />
+                {isEmpty ? (
+                  renderEmptyStates()
+                ) : (
+                  <FullWidthContainer
+                    className={S.CardsContainer}
+                    data-element-id="dashboard-cards-container"
+                  >
+                    <DashboardGridConnected
+                      clickBehaviorSidebarDashcard={
+                        props.clickBehaviorSidebarDashcard
+                      }
+                      isNightMode={shouldRenderAsNightMode}
+                      isFullscreen={props.isFullscreen}
+                      isEditingParameter={props.isEditingParameter}
+                      isEditing={props.isEditing}
+                      dashboard={dashboard}
+                      slowCards={props.slowCards}
+                      navigateToNewCardFromDashboard={
+                        props.navigateToNewCardFromDashboard
+                      }
+                      selectedTabId={selectedTabId}
+                      onEditingChange={handleSetEditing}
+                      downloadsEnabled={downloadsEnabled}
+                      autoScrollToDashcardId={autoScrollToDashcardId}
+                      reportAutoScrolledToDashcard={
+                        reportAutoScrolledToDashcard
+                      }
+                    />
+                  </FullWidthContainer>
+                )}
               </Box>
 
-              <Flex
-                pos="relative"
-                miw={0}
-                mih={0}
-                className={cx(S.DashboardBody, {
-                  [S.isEditingOrSharing]: isEditing || isSharing,
-                })}
-              >
-                <Box
-                  className={cx(S.ParametersAndCardsContainer, {
-                    [S.shouldMakeDashboardHeaderStickyAfterScrolling]:
-                      !isFullscreen && (isEditing || isSharing),
-                    [S.notEmpty]: !isEmpty,
-                  })}
-                  id={DASHBOARD_PDF_EXPORT_ROOT_ID}
-                  data-element-id="dashboard-parameters-and-cards"
-                  data-testid="dashboard-parameters-and-cards"
-                >
-                  <DashboardParameterPanel isFullscreen={isFullscreen} />
-                  {isEmpty ? (
-                    renderEmptyStates()
-                  ) : (
-                    <FullWidthContainer
-                      className={S.CardsContainer}
-                      data-element-id="dashboard-cards-container"
-                    >
-                      <DashboardGridConnected
-                        clickBehaviorSidebarDashcard={
-                          props.clickBehaviorSidebarDashcard
-                        }
-                        isNightMode={shouldRenderAsNightMode}
-                        isFullscreen={props.isFullscreen}
-                        isEditingParameter={props.isEditingParameter}
-                        isEditing={props.isEditing}
-                        dashboard={dashboard}
-                        slowCards={props.slowCards}
-                        navigateToNewCardFromDashboard={
-                          props.navigateToNewCardFromDashboard
-                        }
-                        selectedTabId={selectedTabId}
-                        onEditingChange={handleSetEditing}
-                        downloadsEnabled={downloadsEnabled}
-                        autoScrollToDashcardId={autoScrollToDashcardId}
-                        reportAutoScrolledToDashcard={
-                          reportAutoScrolledToDashcard
-                        }
-                      />
-                    </FullWidthContainer>
-                  )}
-                </Box>
-
-                <DashboardSidebars
-                  dashboard={dashboard}
-                  showAddParameterPopover={props.showAddParameterPopover}
-                  removeParameter={props.removeParameter}
-                  addCardToDashboard={props.addCardToDashboard}
-                  clickBehaviorSidebarDashcard={
-                    props.clickBehaviorSidebarDashcard
-                  }
-                  onReplaceAllDashCardVisualizationSettings={
-                    props.onReplaceAllDashCardVisualizationSettings
-                  }
-                  onUpdateDashCardVisualizationSettings={
-                    props.onUpdateDashCardVisualizationSettings
-                  }
-                  onUpdateDashCardColumnSettings={
-                    props.onUpdateDashCardColumnSettings
-                  }
-                  setParameterName={props.setParameterName}
-                  setParameterType={props.setParameterType}
-                  setParameterDefaultValue={props.setParameterDefaultValue}
-                  setParameterIsMultiSelect={props.setParameterIsMultiSelect}
-                  setParameterQueryType={props.setParameterQueryType}
-                  setParameterSourceType={props.setParameterSourceType}
-                  setParameterSourceConfig={props.setParameterSourceConfig}
-                  setParameterFilteringParameters={
-                    props.setParameterFilteringParameters
-                  }
-                  setParameterRequired={props.setParameterRequired}
-                  setParameterTemporalUnits={props.setParameterTemporalUnits}
-                  isFullscreen={props.isFullscreen}
-                  sidebar={props.sidebar}
-                  closeSidebar={props.closeSidebar}
-                  selectedTabId={selectedTabId}
-                  onCancel={() => setSharing(false)}
-                />
-              </Flex>
+              <DashboardSidebars
+                dashboard={dashboard}
+                showAddParameterPopover={props.showAddParameterPopover}
+                removeParameter={props.removeParameter}
+                addCardToDashboard={props.addCardToDashboard}
+                clickBehaviorSidebarDashcard={
+                  props.clickBehaviorSidebarDashcard
+                }
+                onReplaceAllDashCardVisualizationSettings={
+                  props.onReplaceAllDashCardVisualizationSettings
+                }
+                onUpdateDashCardVisualizationSettings={
+                  props.onUpdateDashCardVisualizationSettings
+                }
+                onUpdateDashCardColumnSettings={
+                  props.onUpdateDashCardColumnSettings
+                }
+                setParameterName={props.setParameterName}
+                setParameterType={props.setParameterType}
+                setParameterDefaultValue={props.setParameterDefaultValue}
+                setParameterIsMultiSelect={props.setParameterIsMultiSelect}
+                setParameterQueryType={props.setParameterQueryType}
+                setParameterSourceType={props.setParameterSourceType}
+                setParameterSourceConfig={props.setParameterSourceConfig}
+                setParameterFilteringParameters={
+                  props.setParameterFilteringParameters
+                }
+                setParameterRequired={props.setParameterRequired}
+                setParameterTemporalUnits={props.setParameterTemporalUnits}
+                isFullscreen={props.isFullscreen}
+                sidebar={props.sidebar}
+                closeSidebar={props.closeSidebar}
+                selectedTabId={selectedTabId}
+                onCancel={() => setSharing(false)}
+              />
             </Flex>
-          );
-        }}
-      </DashboardLoadingAndErrorWrapper>
-    </>
+          </Flex>
+        );
+      }}
+    </DashboardLoadingAndErrorWrapper>
   );
 }
 

@@ -18,7 +18,6 @@ import { useFavicon } from "metabase/hooks/use-favicon";
 import { useForceUpdate } from "metabase/hooks/use-force-update";
 import { useLoadingTimer } from "metabase/hooks/use-loading-timer";
 import { useWebNotification } from "metabase/hooks/use-web-notification";
-import { ContentTranslationLoader } from "metabase/i18n/components/ContentTranslationLoader";
 import { connect, useSelector } from "metabase/lib/redux";
 import { closeNavbar } from "metabase/redux/app";
 import { getIsNavbarOpen } from "metabase/selectors/app";
@@ -414,7 +413,6 @@ function QueryBuilderInner(props: QueryBuilderInnerProps) {
 
   return (
     <>
-      <ContentTranslationLoader />
       <View
         {...props}
         modal={uiControls.modal}

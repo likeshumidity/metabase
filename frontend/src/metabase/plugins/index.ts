@@ -616,7 +616,6 @@ export const PLUGIN_RESOURCE_DOWNLOADS = {
 
 export const PLUGIN_CONTENT_TRANSLATION = {
   isContentTranslationEnabled: false,
-  ContentTranslationLoader: PluginPlaceholder,
   // This hook returns a function that leaves the given string untranslated
   // _.identity simply returns the argument it receives
   useTranslateContent: () => _.identity,

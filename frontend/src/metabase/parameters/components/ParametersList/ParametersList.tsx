@@ -8,7 +8,6 @@ import type {
 } from "metabase/core/components/Sortable";
 import { SortableList } from "metabase/core/components/Sortable";
 import CS from "metabase/css/core/index.css";
-import { ContentTranslationLoader } from "metabase/i18n/components/ContentTranslationLoader";
 import type { ParametersListProps } from "metabase/parameters/components/ParametersList/types";
 import { getVisibleParameters } from "metabase/parameters/utils/ui";
 import { Icon } from "metabase/ui";
@@ -107,16 +106,13 @@ export const ParametersList = ({
         vertical ? CS.flexColumn : CS.flexRow,
       )}
     >
-      <>
-        <ContentTranslationLoader />
-        <SortableList
-          items={visibleValuePopulatedParameters}
-          getId={getId}
-          renderItem={renderItem}
-          onSortEnd={handleSortEnd}
-          sensors={[pointerSensor]}
-        />
-      </>
+      <SortableList
+        items={visibleValuePopulatedParameters}
+        getId={getId}
+        renderItem={renderItem}
+        onSortEnd={handleSortEnd}
+        sensors={[pointerSensor]}
+      />
     </div>
   ) : null;
 };

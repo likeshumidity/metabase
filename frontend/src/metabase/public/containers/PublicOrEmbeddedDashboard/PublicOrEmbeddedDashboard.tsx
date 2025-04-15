@@ -28,7 +28,6 @@ import type {
   FetchDashboardResult,
   SuccessfulFetchDashboardResult,
 } from "metabase/dashboard/types";
-import { ContentTranslationLoader } from "metabase/i18n/components/ContentTranslationLoader";
 import { connect } from "metabase/lib/redux";
 import { type DispatchFn, useDispatch } from "metabase/lib/redux";
 import { LocaleProvider } from "metabase/public/LocaleProvider";
@@ -224,7 +223,6 @@ const PublicOrEmbeddedDashboardInner = ({
   return (
     <LocaleProvider locale={locale} shouldWaitForLocale>
       <>
-        <ContentTranslationLoader />
         <PublicOrEmbeddedDashboardView
           dashboard={dashboard}
           hasNightModeToggle={hasNightModeToggle}
