@@ -4,7 +4,7 @@ import _ from "underscore";
 import { tag_names } from "cljs/metabase.models.params.shared";
 import { getColumnIcon } from "metabase/common/utils/columns";
 import { isActionDashCard, isVirtualDashCard } from "metabase/dashboard/utils";
-import type { TCFunc } from "metabase/i18n/types";
+import type { ContentTranslationFunction } from "metabase/i18n/types";
 import { getGroupName } from "metabase/querying/filters/utils/groups";
 import { getAllowedIframeAttributes } from "metabase/visualizations/visualizations/IFrameViz/utils";
 import * as Lib from "metabase-lib";
@@ -50,7 +50,7 @@ function buildStructuredQuerySectionOptions(
   stageIndex: number,
   group: Lib.ColumnGroup,
   columns: Lib.ColumnMetadata[],
-  tc?: TCFunc,
+  tc?: ContentTranslationFunction,
 ): StructuredQuerySectionOption[] {
   const groupInfo = Lib.displayInfo(query, stageIndex, group);
 
@@ -133,7 +133,7 @@ export function getParameterMappingOptions(
   parameter: Parameter | null | undefined = null,
   card: Card,
   dashcard: BaseDashboardCard | null | undefined = null,
-  tc?: TCFunc,
+  tc?: ContentTranslationFunction,
 ): ParameterMappingOption[] {
   if (dashcard && isVirtualDashCard(dashcard)) {
     if (["heading", "text"].includes(card.display)) {

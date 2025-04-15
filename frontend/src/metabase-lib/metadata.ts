@@ -27,6 +27,7 @@ import type {
   ColumnGroup,
   ColumnGroupDisplayInfo,
   ColumnMetadata,
+  ContentTranslationFunction,
   DependentItem,
   DrillThru,
   DrillThruDisplayInfo,
@@ -45,7 +46,6 @@ import type {
   QueryDisplayInfo,
   SegmentDisplayInfo,
   SegmentMetadata,
-  TCFunc,
   TableDisplayInfo,
   TableMetadata,
 } from "./types";
@@ -70,109 +70,109 @@ declare function DisplayInfoFn(
   query: Query,
   stageIndex: number,
   columnMetadata: ColumnMetadata,
-  tc?: TCFunc,
+  tc?: ContentTranslationFunction,
 ): ColumnDisplayInfo;
 declare function DisplayInfoFn(
   query: Query,
   stageIndex: number,
   columnGroup: ColumnGroup,
-  tc?: TCFunc,
+  tc?: ContentTranslationFunction,
 ): ColumnGroupDisplayInfo;
 declare function DisplayInfoFn(
   query: Query,
   stageIndex: number,
   cardMetadata: CardMetadata,
-  tc?: TCFunc,
+  tc?: ContentTranslationFunction,
 ): CardDisplayInfo;
 declare function DisplayInfoFn(
   query: Query,
   stageIndex: number,
   tableMetadata: TableMetadata,
-  tc?: TCFunc,
+  tc?: ContentTranslationFunction,
 ): TableDisplayInfo;
 declare function DisplayInfoFn(
   query: Query,
   stageIndex: number,
   tableLike: CardMetadata | TableMetadata,
-  tc?: TCFunc,
+  tc?: ContentTranslationFunction,
 ): CardDisplayInfo | TableDisplayInfo;
 declare function DisplayInfoFn(
   query: Query,
   stageIndex: number,
   aggregationClause: AggregationClause,
-  tc?: TCFunc,
+  tc?: ContentTranslationFunction,
 ): AggregationClauseDisplayInfo;
 declare function DisplayInfoFn(
   query: Query,
   stageIndex: number,
   aggregationOperator: AggregationOperator,
-  tc?: TCFunc,
+  tc?: ContentTranslationFunction,
 ): AggregationOperatorDisplayInfo;
 declare function DisplayInfoFn(
   query: Query,
   stageIndex: number,
   breakoutClause: BreakoutClause,
-  tc?: TCFunc,
+  tc?: ContentTranslationFunction,
 ): BreakoutClauseDisplayInfo;
 declare function DisplayInfoFn(
   query: Query,
   stageIndex: number,
   orderByClause: OrderByClause,
-  tc?: TCFunc,
+  tc?: ContentTranslationFunction,
 ): OrderByClauseDisplayInfo;
 declare function DisplayInfoFn(
   query: Query,
   stageIndex: number,
   clause: Clause,
-  tc?: TCFunc,
+  tc?: ContentTranslationFunction,
 ): ClauseDisplayInfo;
 declare function DisplayInfoFn(
   query: Query,
   stageIndex: number,
   bucket: Bucket,
-  tc?: TCFunc,
+  tc?: ContentTranslationFunction,
 ): BucketDisplayInfo;
 declare function DisplayInfoFn(
   query: Query,
   stageIndex: number,
   metric: MetricMetadata,
-  tc?: TCFunc,
+  tc?: ContentTranslationFunction,
 ): MetricDisplayInfo;
 declare function DisplayInfoFn(
   query: Query,
   stageIndex: number,
   joinStrategy: JoinStrategy,
-  tc?: TCFunc,
+  tc?: ContentTranslationFunction,
 ): JoinStrategyDisplayInfo;
 declare function DisplayInfoFn(
   query: Query,
   stageIndex: number,
   joinConditionOperator: JoinConditionOperator,
-  tc?: TCFunc,
+  tc?: ContentTranslationFunction,
 ): JoinConditionOperatorDisplayInfo;
 declare function DisplayInfoFn(
   query: Query,
   stageIndex: number,
   drillThru: DrillThru,
-  tc?: TCFunc,
+  tc?: ContentTranslationFunction,
 ): DrillThruDisplayInfo;
 declare function DisplayInfoFn(
   query: Query,
   stageIndex: number,
   filterOperator: FilterOperator,
-  tc?: TCFunc,
+  tc?: ContentTranslationFunction,
 ): FilterOperatorDisplayInfo;
 declare function DisplayInfoFn(
   query: Query,
   stageIndex: number,
   segment: SegmentMetadata,
-  tc?: TCFunc,
+  tc?: ContentTranslationFunction,
 ): SegmentDisplayInfo;
 declare function DisplayInfoFn(
   query: Query,
   stageIndex: number,
   extraction: ColumnExtraction,
-  tc?: TCFunc,
+  tc?: ContentTranslationFunction,
 ): ColumnExtractionInfo;
 
 // x can be any sort of opaque object, e.g. a clause or metadata map. Values returned depend on what you pass in, but it
@@ -181,7 +181,7 @@ export const displayInfo: typeof DisplayInfoFn = (...args) => {
   const info = ML.display_info(...args);
 
   if (args.length === 4 && typeof args[3] === "function") {
-    const tc = args[3] as TCFunc;
+    const tc = args[3] as ContentTranslationFunction;
     return {
       ...info,
       ...(info.displayName
@@ -216,7 +216,7 @@ type ColumnMetadataWithDisplayName = ColumnMetadata & {
 // FIXME: translation may not be needed here. i'm not sure this has display names in it
 export function getColumnsFromColumnGroup(
   group: ColumnGroup,
-  tc?: TCFunc,
+  tc?: ContentTranslationFunction,
 ): ColumnMetadata[] {
   const columns: ColumnMetadata[] = ML.columns_group_columns(group);
   if (tc && hasDisplayNames(columns)) {
@@ -294,16 +294,4 @@ export function tableOrCardDependentMetadata(
 
 export function columnKey(column: ColumnMetadata): string {
   return ML.column_key(column);
-}
-
-export function isColumnMetadata(arg: unknown): arg is ColumnMetadata {
-  return ML.column_metadata_QMARK_(arg);
-}
-
-export function isMetricMetadata(arg: unknown): arg is MetricMetadata {
-  return ML.metric_metadata_QMARK_(arg);
-}
-
-export function isSegmentMetadata(arg: unknown): arg is SegmentMetadata {
-  return ML.segment_metadata_QMARK_(arg);
 }

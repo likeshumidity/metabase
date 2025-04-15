@@ -1,12 +1,11 @@
 import { useMemo } from "react";
 
-import { translateContentString } from "metabase/i18n/utils";
-import type { TCFunc } from "metabase/i18n/types";
-
 import { useListContentTranslationsQuery } from "metabase/api/content-translation";
 import { useLocale } from "metabase/common/hooks";
+import type { ContentTranslationFunction } from "metabase/i18n/types";
+import { translateContentString } from "metabase/i18n/utils";
 
-export const useTranslateContent = (): TCFunc => {
+export const useTranslateContent = (): ContentTranslationFunction => {
   const locale = useLocale();
 
   const { data: dictionaryMap } = useListContentTranslationsQuery({

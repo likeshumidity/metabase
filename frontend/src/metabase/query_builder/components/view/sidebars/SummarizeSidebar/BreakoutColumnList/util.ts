@@ -1,4 +1,4 @@
-import type { TCFunc } from "metabase/i18n/types";
+import type { ContentTranslationFunction } from "metabase/i18n/types";
 import * as Lib from "metabase-lib";
 
 import type { ListItem, ListSection } from "./types";
@@ -7,7 +7,7 @@ export function getBreakoutListItem(
   query: Lib.Query,
   stageIndex: number,
   breakout: Lib.BreakoutClause,
-  tc?: TCFunc,
+  tc?: ContentTranslationFunction,
 ): ListItem {
   const column = Lib.breakoutColumn(query, stageIndex, breakout);
   const columnInfo = Lib.displayInfo(query, stageIndex, column, tc);
@@ -19,7 +19,7 @@ function getColumnListItems(
   stageIndex: number,
   breakouts: Lib.BreakoutClause[],
   column: Lib.ColumnMetadata,
-  tc?: TCFunc,
+  tc?: ContentTranslationFunction,
 ): ListItem[] {
   const columnInfo = Lib.displayInfo(query, stageIndex, column, tc);
 
@@ -43,7 +43,7 @@ export function getColumnSections(
   stageIndex: number,
   columns: Lib.ColumnMetadata[],
   searchQuery: string,
-  tc: TCFunc,
+  tc: ContentTranslationFunction,
 ): ListSection[] {
   const breakouts = Lib.breakouts(query, stageIndex);
   const formattedSearchQuery = searchQuery.trim().toLowerCase();

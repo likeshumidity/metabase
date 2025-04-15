@@ -9,6 +9,4 @@ export type DictionaryArray = {
   msgstr: string;
 }[];
 
-export type TCFunc = <TypeOfArgument>(
-  msgid: TypeOfArgument,
-) => string | TypeOfArgument;
+export type ContentTranslationFunction = <T>(msgid: T) => string | T;
