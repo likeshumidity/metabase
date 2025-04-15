@@ -176,8 +176,8 @@ describe("scenarios > admin > localization > content translation", () => {
               });
             });
 
+            cy.log("Column names should be searchable");
             H.popover().within(() => {
-              cy.log("Column names should be searchable");
               cy.findByPlaceholderText(/Finden/).type("er");
               cy.findByText("Kategorie").should("not.exist");
               cy.findByText("Preis").should("not.exist");
