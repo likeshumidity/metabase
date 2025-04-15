@@ -385,10 +385,12 @@ describe("command palette", () => {
   });
 });
 
-describe("shortcuts", () => {
+H.describeWithSnowplow("shortcuts", () => {
   beforeEach(() => {
+    H.resetSnowplow();
     H.restore();
     cy.signInAsAdmin();
+    H.enableTracking();
   });
 
   it("should render a shortcuts modal, and global shortcuts should be available", () => {
@@ -409,9 +411,17 @@ describe("shortcuts", () => {
     cy.realPress("c");
     cy.findByRole("dialog", { name: /collection/i }).should("exist");
     cy.realPress("Escape");
+    H.expectGoodSnowplowEvent({
+      event: "keyboard_shortcut_performed",
+      event_detail: "create-collection",
+    });
     cy.realPress("d");
     cy.findByRole("dialog", { name: /dashboard/i }).should("exist");
     cy.realPress("Escape");
+    H.expectGoodSnowplowEvent({
+      event: "keyboard_shortcut_performed",
+      event_detail: "create-dashboard",
+    });
 
     cy.realPress("b").realPress("d");
     cy.location("pathname").should("contain", "browse/databases");
@@ -421,15 +431,30 @@ describe("shortcuts", () => {
     H.navigationSidebar().should("not.be.visible");
     cy.realPress("[");
     H.navigationSidebar().should("be.visible");
+    H.expectGoodSnowplowEvent(
+      {
+        event: "keyboard_shortcut_performed",
+        event_detail: "toggle-navbar",
+      },
+      2,
+    );
 
     cy.realPress("p");
     cy.location("pathname").should(
       "equal",
       `/collection/${ADMIN_PERSONAL_COLLECTION_ID}`,
     );
+    H.expectGoodSnowplowEvent({
+      event: "keyboard_shortcut_performed",
+      event_detail: "navigate-personal-collection",
+    });
 
     cy.realPress("t");
     cy.location("pathname").should("equal", "/trash");
+    H.expectGoodSnowplowEvent({
+      event: "keyboard_shortcut_performed",
+      event_detail: "navigate-trash",
+    });
   });
 
   it("should support dashboard shortcuts", () => {
