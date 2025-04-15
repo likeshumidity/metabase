@@ -71,10 +71,7 @@ export function QueryColumnPicker({
     () =>
       columnGroups.map((group) => {
         const groupInfo = Lib.displayInfo(query, stageIndex, group);
-
-        // TODO: It would be cleaner to do the translation in
-        // getColumnsFromColumnGroup so that we sort just once
-        const items = Lib.getColumnsFromColumnGroup(group, tc)
+        const items = Lib.getColumnsFromColumnGroup(group)
           .map((column) => ({
             ...Lib.displayInfo(query, stageIndex, column, tc),
             column,
