@@ -3,6 +3,7 @@ import { useMemo } from "react";
 import { t } from "ttag";
 
 import { useGetFieldValuesQuery } from "metabase/api";
+import { useTranslateContent } from "metabase/i18n/hooks";
 import { parseNumber } from "metabase/lib/number";
 import { checkNotNull, isNotNull } from "metabase/lib/types";
 import { Center, type ComboboxProps, Loader } from "metabase/ui";
@@ -50,6 +51,8 @@ function FilterValuePicker({
     fieldInfo.fieldId ?? skipToken,
     { skip: !canLoadFieldValues(fieldInfo) },
   );
+
+  const tc = useTranslateContent();
 
   if (isLoading) {
     return (
