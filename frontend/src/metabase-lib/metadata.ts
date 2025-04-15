@@ -180,20 +180,12 @@ declare function DisplayInfoFn(
 export const displayInfo: typeof DisplayInfoFn = (...args) => {
   const info = ML.display_info(...args);
 
-  if (args.length === 4 && typeof args[3] === "function") {
-    const tc = args[3] as ContentTranslationFunction;
+  const tc = args[3];
+  if (typeof tc === "function") {
     return {
       ...info,
-      ...(info.displayName
-        ? {
-            displayName: tc(info.displayName),
-          }
-        : {}),
-      ...(info.longDisplayName
-        ? {
-            longDisplayName: tc(info.longDisplayName),
-          }
-        : {}),
+      displayName: tc(info.displayName),
+      longDisplayName: tc(info.longDisplayName),
     };
   }
   return info;
