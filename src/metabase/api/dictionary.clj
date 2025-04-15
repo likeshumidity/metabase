@@ -33,7 +33,6 @@
 
 (defn import-translations!
   "Import translations from CSV and insert or update rows in the content_translation table."
-  ; TODO: Let the user specify the table should be truncated before new translations are inserted
   [{:keys [_filename file]}]
   (with-open [reader (io/reader file)]
     (let [csv-data (rest (csv/read-csv reader))]
@@ -67,7 +66,6 @@
   (do
     {:status 200
      :headers {"Content-Type" "application/json"}
-     ; TODO: Describe exactly what was changed
      :body (json/encode {:success true
                          :message "Import was successful"})}))
 
