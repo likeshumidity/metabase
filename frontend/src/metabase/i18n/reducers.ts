@@ -1,56 +1,27 @@
-import { type PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 
 import { contentTranslationApi } from "metabase/api/content-translation";
-import type { ContentTranslationDictionary } from "metabase/i18n/types";
+import type { I18nState } from "metabase-types/store/i18n";
 
-interface ContentTranslationsState {
-  dictionary: ContentTranslationDictionary;
-  locale: string;
-  loading: boolean;
-  error: string | null;
-}
-
-const initialState: ContentTranslationsState = {
-  dictionary: [],
-  locale: "en",
-  loading: false,
-  error: null,
+const initialState: I18nState = {
+  contentTranslationDictionaryForCurrentLocale: {},
 };
 
 export const contentTranslationsSlice = createSlice({
-  name: "contentTranslations",
+  name: "metabase-enterprise/content-translations",
   initialState,
-  reducers: {
-    setContentTranslationLocale: (state, action: PayloadAction<string>) => {
-      state.locale = action.payload;
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
-    builder
-      .addMatcher(
-        contentTranslationApi.endpoints.listContentTranslations.matchPending,
-        (state) => {
-          state.loading = true;
-          state.error = null;
-        },
-      )
-      .addMatcher(
-        contentTranslationApi.endpoints.listContentTranslations.matchFulfilled,
-        (state, action) => {
-          state.loading = false;
-          state.dictionary = action.payload.data || [];
-        },
-      )
-      .addMatcher(
-        contentTranslationApi.endpoints.listContentTranslations.matchRejected,
-        (state, action) => {
-          state.loading = false;
-          state.error = action.error.message || "Failed to load translations";
-        },
-      );
+    builder.addMatcher(
+      contentTranslationApi.endpoints.listContentTranslations.matchFulfilled,
+      (state, action) => {
+        // TODO: Need to transform the data here to just get the current locale?
+        // Or change the BE endpoint so it only provides the active locale's dictionary
+        state.contentTranslationDictionaryForCurrentLocale =
+          action.payload.data || [];
+      },
+    );
   },
 });
-
-export const { setContentTranslationLocale } = contentTranslationsSlice.actions;
 
 export const { reducer } = contentTranslationsSlice;

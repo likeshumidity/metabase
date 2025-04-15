@@ -28,6 +28,7 @@ export interface State {
   dashboard: DashboardState;
   embed: EmbedState;
   entities: EntitiesState;
+  i18n: I18nState;
   parameters: ParametersState;
   qb: QueryBuilderState;
   requests: RequestsState;
@@ -38,7 +39,6 @@ export interface State {
   modal: ModalName;
   undo: UndoState;
   downloads: DownloadsState;
-  i18n: I18nState;
 }
 
 export type Dispatch<T = any> = (action: T) => unknown | Promise<unknown>;

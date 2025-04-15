@@ -3,13 +3,15 @@ import { useEffect } from "react";
 import { useListContentTranslationsQuery } from "metabase/api/content-translation";
 import { useLocale } from "metabase/common/hooks";
 import { setContentTranslationLocale } from "metabase/i18n/reducers";
-import { getContentTranslations } from "metabase/i18n/selectors";
+import { getContentTranslationDictionaryForCurrentLocale } from "metabase/i18n/selectors";
 import { useDispatch, useSelector } from "metabase/lib/redux";
 
 export const ContentTranslationLoader = () => {
   const dispatch = useDispatch();
   const locale = useLocale();
-  const { locale: currentLocale } = useSelector(getContentTranslations);
+  const { locale: currentLocale } = useSelector(
+    getContentTranslationDictionaryForCurrentLocale,
+  );
 
   // Update locale in Redux when the application locale changes
   useEffect(() => {
