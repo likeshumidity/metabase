@@ -51,7 +51,15 @@
     (distinct (filter string? all-names))))
 
 (defn get-translations
-  "List the translations stored in the content_translation table"
-  []
-  (t2/query {:select [:*]
-             :from [[(t2/table-name :model/ContentTranslation) :t]]}))
+  "List the translations stored in the content_translation table.
+  Optionally filter by locale if a locale parameter is provided."
+  ([]
+   (get-translations nil))
+  ([locale]
+   (let [base-query {:select [:*]
+                     :from [[(t2/table-name :model/ContentTranslation) :t]]}
+         query (if locale
+                 (assoc base-query :where [:= :t/locale locale])
+                 base-query)]
+     (log/info locale)
+     (t2/query query))))

@@ -1,21 +1,22 @@
 import { useMemo } from "react";
 
-import { getContentTranslationDictionaryForCurrentLocale } from "metabase/i18n/selectors";
-import { useSelector } from "metabase/lib/redux";
+import { useListContentTranslationsQuery } from "metabase/api/content-translation";
+import { useLocale } from "metabase/common/hooks";
 
 import type { TCFunc } from "./types";
 import { translateContentString } from "./utils";
 
 export const useTranslateContent = (): TCFunc => {
-  const dictionaryForLocale = useSelector(
-    getContentTranslationDictionaryForCurrentLocale,
-  );
+  const locale = useLocale();
+  const { data: dictionaryMap } = useListContentTranslationsQuery({
+    locale,
+  });
 
   const contentTranslationFunction: TCFunc = useMemo(
     () =>
       <TypeOfMsgidArgument>(msgid: TypeOfMsgidArgument) =>
-        translateContentString(dictionaryForLocale, msgid),
-    [dictionaryForLocale],
+        translateContentString(dictionaryMap, msgid),
+    [dictionaryMap],
   );
 
   return contentTranslationFunction;

@@ -1,9 +1,9 @@
-import type { ContentTranslationDictionary } from "metabase/i18n/types";
+import type { DictionaryArray, DictionaryMap } from "metabase/i18n/types";
 
 import { Api } from "./api";
 import { invalidateTags, listTag } from "./tags";
 
-type ListContentTranslationsResponse = { data: ContentTranslationDictionary };
+type ListContentTranslationsResponse = { data: DictionaryArray };
 type ListContentTranslationsRequest = {
   locale: string;
 };
@@ -16,7 +16,7 @@ export const contentTranslationApi = Api.injectEndpoints({
   endpoints: (builder) => {
     return {
       listContentTranslations: builder.query<
-        ListContentTranslationsResponse,
+        DictionaryMap,
         ListContentTranslationsRequest | void
       >({
         query: (params) => ({
@@ -24,10 +24,29 @@ export const contentTranslationApi = Api.injectEndpoints({
           url: "/api/dictionary/",
           params,
         }),
-        // providesTags: () => listTag("content-translation"),
+        transformResponse: (
+          response: ListContentTranslationsResponse,
+        ): DictionaryMap => {
+          const dictionaryArray: DictionaryArray = response.data;
+
+          // Convert the array to a Map for faster lookups
+          const dictionaryMap: DictionaryMap =
+            dictionaryArray.reduce<DictionaryMap>((map, row) => {
+              const { msgid, msgstr } = row;
+              if (map.has(msgid)) {
+                console.error(
+                  `The dictionary has multiple translations for "${msgid}"`,
+                );
+              }
+              map.set(msgid, msgstr);
+              return map;
+            }, new Map());
+          return dictionaryMap;
+        },
+        providesTags: () => [listTag("content-translation")],
       }),
       uploadContentTranslationDictionary: builder.mutation<
-        ContentTranslationDictionary,
+        DictionaryArray,
         UploadContentTranslationDictionaryRequest
       >({
         query: ({ file }) => {

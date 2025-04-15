@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 
 import { QuestionLoaderHOC } from "metabase/containers/QuestionLoader";
-import { useTranslateContent } from "metabase/i18n/components/ContentTranslationContext";
+import { useTranslateContent } from "metabase/i18n/hooks";
 import { getParameterMappingOptions } from "metabase/parameters/utils/mapping-options";
 
 import ParameterTargetWidget from "../components/ParameterTargetWidget";

@@ -1,14 +1,13 @@
 import { SAMPLE_DATABASE } from "e2e/support/cypress_sample_database";
 import { NORMAL_USER_ID } from "e2e/support/cypress_sample_instance_data";
+import type { DictionaryArray } from "metabase/i18n/types";
 
 import { openDashCardCardParameterMapper } from "./helpers/e2e-content-translation-helpers";
 
 const { PRODUCTS_ID } = SAMPLE_DATABASE;
 const { H } = cy;
 
-type Dictionary = { locale: string; msgid: string; msgstr: string }[];
-
-const translationsOfColumnNames: Dictionary = [
+const translationsOfColumnNames: DictionaryArray = [
   { locale: "de", msgid: "Title", msgstr: "Titel" },
   { locale: "de", msgid: "Vendor", msgstr: "Anbieter" },
   { locale: "de", msgid: "Rating", msgstr: "Bewertung" },
@@ -19,7 +18,7 @@ const translationsOfColumnNames: Dictionary = [
 
 const columnNamesWithTypeText = ["Title", "Category", "Vendor"];
 
-const getCSV = (dictionary: Dictionary) => {
+const getCSV = (dictionary: DictionaryArray) => {
   return (
     "Language,String,Translation\n" +
     dictionary.map((row) => Object.values(row).join(",")).join("\n")

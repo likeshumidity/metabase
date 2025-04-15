@@ -11,6 +11,7 @@
    [metabase.server.streaming-response :as sr]
    [metabase.util.date-2 :as u.date]
    [metabase.util.json :as json]
+   [metabase.util.log :as log]
    [metabase.util.malli.schema :as ms]
    [toucan2.core :as t2])
   (:import
@@ -30,20 +31,6 @@
       (.flush writer)
       (finally
         (.close writer)))))
-
-(api.macros/defendpoint :post "/csv"
-  "Provides content translation dictionary in CSV"
-  [_route-params
-   _query-params
-   {:keys [locales] :as _body} :- [:map
-                                   [:locales ms/NonBlankString]]]
-  (let [locales-list (str/split locales #"-")]
-    (sr/streaming-response {:content-type "text/csv; charset=utf-8"
-                            :status 200
-                            :headers {"Content-Disposition" (format "attachment; filename=\"content_dictionary_%s.csv\""
-                                                                    (u.date/format (t/zoned-date-time)))}}
-                           [os canceled-chan]
-      (format-csv-to-stream os (ct/get-all-display-names) locales-list))))
 
 (defn import-translations!
   "Import translations from CSV and insert or update rows in the content_translation table."
@@ -85,10 +72,12 @@
      :body (json/encode {:success true
                          :message "Import was successful"})}))
 
-#_{:clj-kondo/ignore [:deprecated-var]}
 (api.macros/defendpoint :get "/"
   "Provides content translations stored in the content_translations table"
-  []
-  {:data (ct/get-translations)})
+  [_route-params query-params _body]
+  (let [locale (:locale query-params)]
+    (if locale
+      {:data (ct/get-translations locale)}
+      {:data (ct/get-translations)})))
 
 (set! *warn-on-reflection* true)

@@ -3,7 +3,7 @@ import { t } from "ttag";
 
 import Input from "metabase/core/components/Input";
 import { useDebouncedValue } from "metabase/hooks/use-debounced-value";
-import { useTranslateContent } from "metabase/i18n/components/ContentTranslationContext";
+import { useTranslateContent } from "metabase/i18n/hooks";
 import { SEARCH_DEBOUNCE_DURATION } from "metabase/lib/constants";
 import {
   type UpdateQueryHookProps,

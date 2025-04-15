@@ -1,7 +1,7 @@
 import { type Ref, forwardRef, useState } from "react";
 import { t } from "ttag";
 
-import { useTranslateContent } from "metabase/i18n/components/ContentTranslationContext";
+import { useTranslateContent } from "metabase/i18n/hooks";
 import { FilterPill } from "metabase/querying/filters/components/FilterPanel/FilterPill";
 import { FilterPicker } from "metabase/querying/filters/components/FilterPicker";
 import { Button, Flex, Icon, Popover } from "metabase/ui";

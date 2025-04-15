@@ -7,7 +7,6 @@ import { dashboardReducers as dashboard } from "metabase/dashboard/reducers";
 import * as parameters from "metabase/parameters/reducers";
 import app from "metabase/redux/app";
 import { reducer as auth } from "metabase/redux/auth";
-import contentTranslations from "metabase/redux/content-translations";
 import { reducer as downloads } from "metabase/redux/downloads";
 import { embed } from "metabase/redux/embed";
 import entities, { enhanceRequestsReducer } from "metabase/redux/entities";
@@ -35,5 +34,4 @@ export const commonReducers = {
   dashboard,
   parameters: combineReducers(parameters),
   downloads,
-  contentTranslations,
 };

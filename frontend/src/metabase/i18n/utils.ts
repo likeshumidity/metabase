@@ -1,8 +1,12 @@
-import type { DictionaryForLocale } from "./types";
+import type { DictionaryMap } from "./types";
 
-/** Translate a user-generated string */
+/** Translate a user-generated string
+ *
+ * Terminology: A "msgid" is a 'raw', untranslated string. A "msgstr" is a
+ * translation of a msgid.
+ * */
 export const translateContentString = <TypeOfMsgidArgument>(
-  dictionary: DictionaryForLocale,
+  dictionaryMap: DictionaryMap | undefined,
   /** We often need to pass in variables that have the type string|undefined,
    * so we allow variables of any type to be passed in, and they'll be
    * translated only if they're strings. */
@@ -16,9 +20,11 @@ export const translateContentString = <TypeOfMsgidArgument>(
     return msgid;
   }
 
-  if (!dictionary.length) {
+  const msgstr = dictionaryMap?.get(msgid);
+
+  if (!msgstr || !msgstr.trim()) {
     return msgid;
   }
 
-  return dictionary[msgid] || msgid;
+  return msgstr;
 };
