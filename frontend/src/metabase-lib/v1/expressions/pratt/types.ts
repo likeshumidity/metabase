@@ -1,7 +1,5 @@
 import { isProduction } from "metabase/env";
 
-import type { CompileError } from "../errors";
-
 type VariableKind = "dimension" | "segment" | "aggregation" | "expression";
 type Type = VariableKind | "string" | "number" | "boolean";
 type VariableId = number;
@@ -96,23 +94,6 @@ export interface NodeType {
 
   // The expectedType of the child nodes
   expectedTypes: Type[] | null;
-}
-
-type HookFn = (token: Token, node: Node) => void;
-type HookErrFn = (token: Token, node: Node, err: CompileError) => void;
-type NodeErrFn = (node: Node, err: CompileError) => void;
-export interface Hooks {
-  onIteration?: HookFn;
-  onCreateNode?: HookFn;
-  onPlaceNode?: (node: Node, parent: Node) => void;
-  onSkipToken?: HookFn;
-  onReparentNode?: HookFn;
-  onCompleteNode?: HookFn;
-  onTerminatorToken?: HookFn;
-  onBadToken?: HookErrFn;
-  onUnexpectedTerminator?: HookErrFn;
-  onMissinChildren?: HookErrFn;
-  onChildConstraintViolation?: NodeErrFn;
 }
 
 class AssertionError extends Error {

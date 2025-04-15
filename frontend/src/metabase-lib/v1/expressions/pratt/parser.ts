@@ -13,11 +13,10 @@ import {
   ROOT,
   SUB,
 } from "./syntax";
-import type { Hooks, Node, NodeType, Token } from "./types";
+import type { Node, NodeType, Token } from "./types";
 import { assert } from "./types";
 
 interface ParserOptions {
-  hooks?: Hooks;
   maxIterations?: number;
   throwOnError?: boolean;
 }
@@ -28,24 +27,21 @@ interface ParserResult {
 }
 
 export function parse(tokens: Token[], opts: ParserOptions = {}): ParserResult {
-  const { maxIterations = 1000000, hooks = {}, throwOnError = false } = opts;
+  const { maxIterations = 1000000, throwOnError = false } = opts;
   const errors: CompileError[] = [];
   let counter = 0;
   const root = createASTNode(null, null, ROOT, counter);
   root.isRoot = true;
 
   let node = root;
-  hooks.onCreateNode?.(tokens[0], node);
   for (
     let index = 0;
     index < tokens.length && counter < maxIterations;
     index++
   ) {
     const token = tokens[index];
-    hooks.onIteration?.(token, node);
 
     if (token.type.skip) {
-      hooks.onSkipToken?.(token, node);
       continue;
     }
     if (token.type === BAD_TOKEN) {
@@ -53,7 +49,6 @@ export function parse(tokens: Token[], opts: ParserOptions = {}): ParserResult {
         node,
         token,
       });
-      hooks.onBadToken?.(token, node, err);
       if (throwOnError) {
         throw err;
       }
@@ -83,7 +78,6 @@ export function parse(tokens: Token[], opts: ParserOptions = {}): ParserResult {
           getASType(token.type, node.parent.type),
           counter,
         );
-        hooks.onReparentNode?.(token, node);
       } else {
         // If we don't need to reparent, we decrement the token index. This is
         // because we iterate several times for each node, first to create it
@@ -96,21 +90,17 @@ export function parse(tokens: Token[], opts: ParserOptions = {}): ParserResult {
       node = place(node, errors, opts);
       if (node.children.length === node.type.expectedChildCount) {
         node.complete = true;
-        hooks.onCompleteNode?.(token, node);
       }
     } else if (token.type.isTerminator) {
-      hooks.onTerminatorToken?.(token, node);
       // Terminator tokens like `]`, `)` or end of input will complete a node if
       // they match the type's `requiresTerminator`
       if (node.type.requiresTerminator === token.type) {
         node.complete = true;
-        hooks.onCompleteNode?.(token, node);
       } else if (node.type.ignoresTerminator.indexOf(token.type) === -1) {
         // If the current token isn't in the list of the AST type's ignored
         // tokens and it's not the terminator the current node requires, we'll
         // throw an error
         const err = new CompileError(t`Expected expression`, { node, token });
-        hooks.onUnexpectedTerminator?.(token, node, err);
         if (throwOnError) {
           throw err;
         }
@@ -121,7 +111,6 @@ export function parse(tokens: Token[], opts: ParserOptions = {}): ParserResult {
           // loop one last time
           if (!node.complete) {
             node.complete = true;
-            hooks.onCompleteNode?.(token, node);
             index--;
           }
         }
@@ -131,7 +120,6 @@ export function parse(tokens: Token[], opts: ParserOptions = {}): ParserResult {
         // Subtraction is a special case because it might actually be negation
         // ie. -42
         node = createASTNode(token, node, NEGATIVE, counter);
-        hooks.onCreateNode?.(token, node);
       } else if (token.type === ADD) {
         // Addition is a special case because it might actually be just a unary plus
         // ie. +42
@@ -140,7 +128,6 @@ export function parse(tokens: Token[], opts: ParserOptions = {}): ParserResult {
         const err = new CompileError(t`Expected expression`, {
           token,
         });
-        hooks.onMissinChildren?.(token, node, err);
         if (throwOnError) {
           throw err;
         }
@@ -155,7 +142,6 @@ export function parse(tokens: Token[], opts: ParserOptions = {}): ParserResult {
         getASType(token.type, node.type),
         counter,
       );
-      hooks.onCreateNode?.(token, node);
     }
     counter += 1;
   }
@@ -170,7 +156,6 @@ export function parse(tokens: Token[], opts: ParserOptions = {}): ParserResult {
       node: root,
       ...childViolation,
     });
-    hooks.onChildConstraintViolation?.(node, err);
     if (throwOnError) {
       throw err;
     }
@@ -196,7 +181,7 @@ function createASTNode(
 }
 
 function place(node: Node, errors: CompileError[], opts: ParserOptions) {
-  const { hooks = {}, throwOnError = false } = opts;
+  const { throwOnError = false } = opts;
   const { type, parent } = node;
 
   const childViolation = type.checkChildConstraints(node);
@@ -205,7 +190,6 @@ function place(node: Node, errors: CompileError[], opts: ParserOptions) {
       node,
       ...childViolation,
     });
-    hooks.onChildConstraintViolation?.(node, err);
     if (throwOnError) {
       throw err;
     }
@@ -213,7 +197,6 @@ function place(node: Node, errors: CompileError[], opts: ParserOptions) {
   }
   assert(parent, "Tried to place a node without a parent", node);
   parent.children.push(node);
-  hooks.onPlaceNode?.(node, parent);
   return parent;
 }
 
