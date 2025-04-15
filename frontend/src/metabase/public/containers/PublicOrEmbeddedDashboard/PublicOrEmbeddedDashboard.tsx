@@ -222,37 +222,35 @@ const PublicOrEmbeddedDashboardInner = ({
 
   return (
     <LocaleProvider locale={locale} shouldWaitForLocale>
-      <>
-        <PublicOrEmbeddedDashboardView
-          dashboard={dashboard}
-          hasNightModeToggle={hasNightModeToggle}
-          isFullscreen={isFullscreen}
-          isNightMode={isNightMode}
-          onFullscreenChange={onFullscreenChange}
-          onNightModeChange={onNightModeChange}
-          onRefreshPeriodChange={onRefreshPeriodChange}
-          refreshPeriod={refreshPeriod}
-          setRefreshElapsedHook={setRefreshElapsedHook}
-          selectedTabId={selectedTabId}
-          parameters={parameters}
-          parameterValues={parameterValues}
-          draftParameterValues={draftParameterValues}
-          setParameterValue={setParameterValue}
-          setParameterValueToDefault={setParameterValueToDefault}
-          dashboardId={dashboardId}
-          background={background}
-          bordered={bordered}
-          titled={titled}
-          theme={theme}
-          getClickActionMode={getClickActionMode}
-          hideParameters={hideParameters}
-          navigateToNewCardFromDashboard={navigateToNewCardFromDashboard}
-          slowCards={slowCards}
-          cardTitled={cardTitled}
-          downloadsEnabled={downloadsEnabled}
-          withFooter={withFooter}
-        />
-      </>
+      <PublicOrEmbeddedDashboardView
+        dashboard={dashboard}
+        hasNightModeToggle={hasNightModeToggle}
+        isFullscreen={isFullscreen}
+        isNightMode={isNightMode}
+        onFullscreenChange={onFullscreenChange}
+        onNightModeChange={onNightModeChange}
+        onRefreshPeriodChange={onRefreshPeriodChange}
+        refreshPeriod={refreshPeriod}
+        setRefreshElapsedHook={setRefreshElapsedHook}
+        selectedTabId={selectedTabId}
+        parameters={parameters}
+        parameterValues={parameterValues}
+        draftParameterValues={draftParameterValues}
+        setParameterValue={setParameterValue}
+        setParameterValueToDefault={setParameterValueToDefault}
+        dashboardId={dashboardId}
+        background={background}
+        bordered={bordered}
+        titled={titled}
+        theme={theme}
+        getClickActionMode={getClickActionMode}
+        hideParameters={hideParameters}
+        navigateToNewCardFromDashboard={navigateToNewCardFromDashboard}
+        slowCards={slowCards}
+        cardTitled={cardTitled}
+        downloadsEnabled={downloadsEnabled}
+        withFooter={withFooter}
+      />
     </LocaleProvider>
   );
 };
