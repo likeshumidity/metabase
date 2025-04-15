@@ -175,6 +175,19 @@ describe("scenarios > admin > localization > content translation", () => {
                 // Clicking the column name returns to the main popover
               });
             });
+
+            H.popover().within(() => {
+              cy.log("Column names should be searchable");
+              cy.findByPlaceholderText(/Finden/).type("er");
+              cy.findByText("Kategorie").should("not.exist");
+              cy.findByText("Preis").should("not.exist");
+              cy.findByText("Titel").should("not.exist");
+              cy.findByText("ID").should("not.exist");
+              cy.findByText("Ean").should("not.exist");
+              cy.findByText("Anbeiter").should("be.visible");
+              cy.findByText("Bewertung").should("be.visible");
+              cy.findByText("Erstellt am").should("be.visible");
+            });
           });
 
           it("summarize sidebar", () => {
