@@ -11,7 +11,6 @@
    [metabase.server.streaming-response :as sr]
    [metabase.util.date-2 :as u.date]
    [metabase.util.json :as json]
-   [metabase.util.log :as log]
    [metabase.util.malli.schema :as ms]
    [toucan2.core :as t2])
   (:import
